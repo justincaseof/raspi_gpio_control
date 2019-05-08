@@ -1,4 +1,4 @@
-package gpio
+package gpiocontrol
 
 import (
 	"periph.io/x/periph/conn/gpio"
