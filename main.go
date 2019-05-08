@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"raspi_gpio_control/gpiocontrol"
 	"raspi_gpio_control/logging"
+	"raspi_gpio_control/oscontrol"
 	"syscall"
 	"time"
 
@@ -70,10 +71,14 @@ func mainLoop() {
 			{
 				processing = true
 				logger.Debug("INTERRUPT!", zap.Uint8("interrupt", uint8(interrupt)))
-				logger.Debug("   --> sleeping...")
-				time.Sleep(1000 * time.Millisecond)
-				logger.Debug("   ...done")
-				processing = false
+				switch interrupt {
+				case gpiocontrol.InterruptRESTART:
+					oscontrol.RestartOS()
+				case gpiocontrol.InterruptPOWEROFF:
+					oscontrol.PoweroffOS()
+				default:
+					logger.Warn("Unknown interrupt")
+				}
 			}
 		}
 	}
