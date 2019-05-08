@@ -13,7 +13,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var logger = logging.New("raspi_gpio_control", false)
+var logger = logging.New("raspi_gpio_control_main", false)
 const GPIO_CONFIG_FILENAME = "gpioconfig.yml"
 
 var interruptChannel = make(chan gpiocontrol.Interrupt)
@@ -24,7 +24,9 @@ func main() {
 	// INIT
 	var cfg gpiocontrol.GPIOConfig
 	readGPIOConfig(&cfg)
-	if gpiocontrol.InitGPIO(&cfg) != nil {
+	err := gpiocontrol.InitGPIO(&cfg)
+	if err != nil {
+		logger.Error("Cannot set up GPIO", zap.Error(err))
 		panic("Cannot set up GPIO")
 	}
 
