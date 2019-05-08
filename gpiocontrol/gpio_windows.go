@@ -14,3 +14,8 @@ func HasInterruptPOWEROFF() bool {
 	// will not be implemented
 	panic("WINDOWS IS NOT SUPPORTED.")
 }
+
+func ToggleLEDnative() {
+	// will not be implemented
+	panic("WINDOWS IS NOT SUPPORTED.")
+}

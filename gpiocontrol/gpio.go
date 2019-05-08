@@ -48,3 +48,6 @@ func CheckInterruptPOWEROFF(interruptChannel chan Interrupt, processing *bool) {
 	}
 }
 
+func ToggleLED() {
+	ToggleLEDnative()
+}

@@ -65,8 +65,11 @@ func readGPIOConfig(gpioconfig *gpiocontrol.GPIOConfig) {
 func mainLoop() {
 	for {
 		select {
-		case <-time.After(5 * time.Second):
-			logger.Debug("* Tick *")
+		case <-time.After(1 * time.Second):
+			{
+				gpiocontrol.ToggleLED()
+				logger.Debug("* Tick *")
+			}
 		case interrupt := <-interruptChannel:
 			{
 				processing = true
