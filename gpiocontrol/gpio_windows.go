@@ -1,21 +1,29 @@
 package gpiocontrol
 
-func InitGPIONative(gpioConfig *GPIOConfig) error {
+func initGPIONative(gpioConfig *GPIOConfig) error {
 	// will not be implemented
 	panic("WINDOWS IS NOT SUPPORTED.")
 }
 
-func HasInterruptRESTART() bool {
+func hasInterruptRESTART() bool {
 	// will not be implemented
 	panic("WINDOWS IS NOT SUPPORTED.")
 }
 
-func HasInterruptPOWEROFF() bool {
+func hasInterruptPOWEROFF() bool {
 	// will not be implemented
 	panic("WINDOWS IS NOT SUPPORTED.")
 }
 
-func ToggleLEDnative() {
+func pinPWMnative(dutyPercentage uint, hertz uint) {
+	// will not be implemented
+	panic("WINDOWS IS NOT SUPPORTED.")
+}
+func pinHighNative() {
+	// will not be implemented
+	panic("WINDOWS IS NOT SUPPORTED.")
+}
+func pinLowNative() {
 	// will not be implemented
 	panic("WINDOWS IS NOT SUPPORTED.")
 }

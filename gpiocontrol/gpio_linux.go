@@ -13,7 +13,7 @@ var restartPin gpioperiph.PinIn
 var poweroffPin gpioperiph.PinIn
 var ledPin gpioperiph.PinOut
 
-func InitGPIONative(gpioConfig *GPIOConfig) error {
+func initGPIONative(gpioConfig *GPIOConfig) error {
     logger.Info("* initializing gpio lib *")
     if _, err := iohost.Init(); err != nil {
         logger.Error("error initializing gpio lib", zap.Error(err))
@@ -59,18 +59,18 @@ func InitGPIONative(gpioConfig *GPIOConfig) error {
 	return nil
 }
 
-func HasInterruptRESTART() bool {
+func hasInterruptRESTART() bool {
 	// WaitForEdge is blocking
 	return restartPin.WaitForEdge(-1)
 }
 
-func HasInterruptPOWEROFF() bool {
+func hasInterruptPOWEROFF() bool {
 	// WaitForEdge is blocking
 	return poweroffPin.WaitForEdge(-1)
 }
 
 var isOn bool = true
-func ToggleLEDnative() {
+func toggleLEDnative() {
 	if isOn {
 		isOn = false
 		logger.Info("  LED: OFF")
@@ -82,6 +82,12 @@ func ToggleLEDnative() {
 	}
 }
 
-func LEDpwm() {
-	ledPin.PWM(gpioperiph.DutyHalf, 10 * physic.Hertz)
+func pinPWMnative(dutyPercentage uint, hertz uint) {
+	ledPin.PWM(uint32((gpioperiph.DutyHalf * 100) / dutyPercentage), hertz * physic.Hertz)
+}
+func pinHighNative() {
+	ledPin.Out(gpioperiph.High)
+}
+func pinLowNative() {
+ledPin.Out(gpioperiph.Low)
 }

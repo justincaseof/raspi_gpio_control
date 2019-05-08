@@ -21,12 +21,12 @@ const (
 var logger = logging.New("raspi_gpio_control_base", false)
 
 func InitGPIO(gpioConfig *GPIOConfig) error {
-	return InitGPIONative(gpioConfig)
+	return initGPIONative(gpioConfig)
 }
 
 func CheckInterruptRESTART(interruptChannel chan Interrupt, processing *bool) {
 	for {
-		if HasInterruptRESTART() {
+		if hasInterruptRESTART() {
 			if *processing {
 				logger.Debug("discarding RESTART interrupt")
 			} else {
@@ -38,7 +38,7 @@ func CheckInterruptRESTART(interruptChannel chan Interrupt, processing *bool) {
 
 func CheckInterruptPOWEROFF(interruptChannel chan Interrupt, processing *bool) {
 	for {
-		if HasInterruptPOWEROFF() {
+		if hasInterruptPOWEROFF() {
 			if *processing {
 				logger.Debug("discarding POWEROFF interrupt")
 			} else {
@@ -48,6 +48,14 @@ func CheckInterruptPOWEROFF(interruptChannel chan Interrupt, processing *bool) {
 	}
 }
 
-func ToggleLED() {
-	ToggleLEDnative()
+func LEDpwm(dutyPercentage uint, hertz uint) {
+	pinPWMnative(dutyPercentage, hertz)
+}
+
+func LEDon() {
+	pinHighNative()
+}
+
+func LEDoff() {
+	pinLOWnative()
 }
