@@ -15,6 +15,7 @@ import (
 )
 
 var logger = logging.New("raspi_gpio_control_main", false)
+
 const GPIO_CONFIG_FILENAME = "gpioconfig.yml"
 
 var interruptChannel = make(chan gpiocontrol.Interrupt)
@@ -77,23 +78,23 @@ func mainLoop() {
 				switch interrupt {
 				case gpiocontrol.InterruptRESTART:
 					if state == RESTART_WAITING_CONFIMRATION {
-						// give our state handler the indicatino to actually restart
+						// give our state handler the indication to actually restart
 						state = RESTART_COMMAND_EXECUTE
 					} else {
 						state = RESTART_REQUESTED
 					}
 					handleState()
-					time.Sleep(500 * time.Millisecond)	// cheap way of forcing the user to wait for another button press.
+					time.Sleep(1000 * time.Millisecond) // cheap way of forcing the user to wait for another button press.
 					processing = false
 				case gpiocontrol.InterruptPOWEROFF:
 					if state == POWEROFF_WAITING_CONFIMRATION {
-						// give our state handler the indicatino to actually poweroff
+						// give our state handler the indication to actually poweroff
 						state = POWEROFF_COMMAND_EXECUTE
 					} else {
 						state = POWEROFF_REQUESTED
 					}
 					handleState()
-					time.Sleep(500 * time.Millisecond)	// cheap way of forcing the user to wait for another button press.
+					time.Sleep(1000 * time.Millisecond) // cheap way of forcing the user to wait for another button press.
 					processing = false
 				default:
 					logger.Warn("Unknown interrupt")
@@ -112,24 +113,22 @@ func mainLoop() {
 type State uint8
 
 const (
-	IDLE_RUNNING 					= State(iota)
-
-	RESTART_REQUESTED 				= State(iota)
-	RESTART_WAITING_CONFIMRATION 	= State(iota)
-	RESTART_COMMAND_EXECUTE			= State(iota)
-
-	POWEROFF_REQUESTED 				= State(iota)
-	POWEROFF_WAITING_CONFIMRATION 	= State(iota)
-	POWEROFF_COMMAND_EXECUTE		= State(iota)
-
+	IDLE_RUNNING                  = State(iota)
+	RESTART_REQUESTED             = State(iota)
+	RESTART_WAITING_CONFIMRATION  = State(iota)
+	RESTART_COMMAND_EXECUTE       = State(iota)
+	POWEROFF_REQUESTED            = State(iota)
+	POWEROFF_WAITING_CONFIMRATION = State(iota)
+	POWEROFF_COMMAND_EXECUTE      = State(iota)
 )
 
 var state = IDLE_RUNNING
 var resetChannel = make(chan bool)
+
 func handleState() {
 	switch state {
-			case IDLE_RUNNING:
-			gpiocontrol.LEDpwm(20, 1)
+	case IDLE_RUNNING:
+		gpiocontrol.LEDpwm(20, 1)
 	case RESTART_REQUESTED:
 		{
 			logger.Debug("RESTART requested, waiting for confirmation")
