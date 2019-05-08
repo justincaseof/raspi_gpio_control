@@ -68,7 +68,7 @@ func mainLoop() {
 		select {
 		case <-time.After(1 * time.Second):
 			{
-				handleState()
+				//handleState()
 			}
 		case interrupt := <-interruptChannel:
 			{
@@ -82,6 +82,7 @@ func mainLoop() {
 					} else {
 						state = RESTART_REQUESTED
 					}
+					handleState()
 					time.Sleep(500 * time.Millisecond)	// cheap way of forcing the user to wait for another button press.
 					processing = false
 				case gpiocontrol.InterruptPOWEROFF:
@@ -91,6 +92,7 @@ func mainLoop() {
 					} else {
 						state = POWEROFF_REQUESTED
 					}
+					handleState()
 					time.Sleep(500 * time.Millisecond)	// cheap way of forcing the user to wait for another button press.
 					processing = false
 				default:
@@ -101,6 +103,7 @@ func mainLoop() {
 			{
 				logger.Debug("Resetting State.")
 				state = IDLE_RUNNING
+				handleState()
 			}
 		}
 	}
