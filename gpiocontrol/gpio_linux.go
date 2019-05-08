@@ -6,9 +6,9 @@ import (
         iohost "periph.io/x/periph/host"
 	gpioperiph "periph.io/x/periph/conn/gpio"
 	"periph.io/x/periph/conn/gpio/gpioreg"
-	"time"
         "raspi_gpio_control/logging"
 )
+
 var logger = logging.New("raspi_gpio_control_linux", false)
 var restartPin gpioperiph.PinIn
 var poweroffPin gpioperiph.PinIn
@@ -24,7 +24,7 @@ func InitGPIONative(gpioConfig *GPIOConfig) error {
 	logger.Info("* setting up GPIO pins *")
 
 	logger.Info("\t--> initializing pin:", zap.String("restartPin", gpioConfig.RestartPin))
-	restartPin := gpioreg.ByName(gpioConfig.RestartPin)
+	restartPin = gpioreg.ByName(gpioConfig.RestartPin)
 	if restartPin == nil {
 		return errors.New("unable to set up restartPin")
 	}
@@ -33,7 +33,7 @@ func InitGPIONative(gpioConfig *GPIOConfig) error {
 	logger.Info("\t--> done.")
 
 	logger.Info("\t--> initializing pin:", zap.String("poweroffPin", gpioConfig.PoweroffPin))
-	poweroffPin := gpioreg.ByName(gpioConfig.PoweroffPin)
+	poweroffPin = gpioreg.ByName(gpioConfig.PoweroffPin)
 	if poweroffPin == nil {
 		return errors.New("unable to set up poweroffPin")
 	}
@@ -46,10 +46,10 @@ func InitGPIONative(gpioConfig *GPIOConfig) error {
 
 func HasInterruptRESTART() bool {
 	// WaitForEdge is blocking
-	return restartPin.WaitForEdge(time.Duration(-1))
+	return restartPin.WaitForEdge(-1)
 }
 
 func HasInterruptPOWEROFF() bool {
 	// WaitForEdge is blocking
-	return poweroffPin.WaitForEdge(time.Duration(-1))
+	return poweroffPin.WaitForEdge(-1)
 }
