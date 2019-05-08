@@ -82,8 +82,8 @@ func toggleLEDnative() {
 	}
 }
 
-func pinPWMnative(dutyPercentage uint, hertz uint) {
-	ledPin.PWM(uint32((gpioperiph.DutyHalf*100)/dutyPercentage), hertz*physic.Hertz)
+func pinPWMnative(dutyPercentage uint32, hertz uint64) {
+	ledPin.PWM(gpioperiph.Duty(uint32(gpioperiph.DutyMax)*dutyPercentage/100), physic.Frequency(hertz*uint64(physic.Hertz)))
 }
 func pinHIGHnative() {
 	ledPin.Out(gpioperiph.High)

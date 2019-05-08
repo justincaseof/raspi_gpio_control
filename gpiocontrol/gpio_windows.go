@@ -15,7 +15,7 @@ func hasInterruptPOWEROFF() bool {
 	panic("WINDOWS IS NOT SUPPORTED.")
 }
 
-func pinPWMnative(dutyPercentage uint, hertz uint) {
+func pinPWMnative(dutyPercentage uint32, hertz uint64) {
 	// will not be implemented
 	panic("WINDOWS IS NOT SUPPORTED.")
 }

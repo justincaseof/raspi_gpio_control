@@ -49,7 +49,7 @@ func CheckInterruptPOWEROFF(interruptChannel chan Interrupt, processing *bool) {
 	}
 }
 
-func LEDpwm(dutyPercentage uint, hertz uint) {
+func LEDpwm(dutyPercentage uint32, hertz uint64) {
 	pinPWMnative(dutyPercentage, hertz)
 }
 
