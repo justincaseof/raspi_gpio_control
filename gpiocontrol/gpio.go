@@ -8,6 +8,7 @@ import (
 type GPIOConfig struct {
 	RestartPin 	string `yaml:"restart-pin"`
 	PoweroffPin string `yaml:"poweroff-pin"`
+	LEDPin      string `yaml:"LED-pin"`
 }
 
 type Interrupt uint8
@@ -46,3 +47,4 @@ func CheckInterruptPOWEROFF(interruptChannel chan Interrupt, processing *bool) {
 		}
 	}
 }
+
