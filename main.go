@@ -24,6 +24,7 @@ func main() {
 	logger.Info("### STARTUP")
 
 	// INIT
+	oscontrol.Init(true)
 	var cfg gpiocontrol.GPIOConfig
 	readGPIOConfig(&cfg)
 	err := gpiocontrol.InitGPIO(&cfg)
@@ -67,10 +68,7 @@ func mainLoop() {
 		select {
 		case <-time.After(1 * time.Second):
 			{
-				//gpiocontrol.ToggleLED()
-				gpiocontrol.LEDpwm()
-				
-				logger.Debug("* Tick *")
+				handleState()
 			}
 		case interrupt := <-interruptChannel:
 			{
@@ -78,15 +76,88 @@ func mainLoop() {
 				logger.Debug("INTERRUPT!", zap.Uint8("interrupt", uint8(interrupt)))
 				switch interrupt {
 				case gpiocontrol.InterruptRESTART:
-					oscontrol.RestartOS()
+					if state == RESTART_WAITING_CONFIMRATION {
+						// give our state handler the indicatino to actually restart
+						state = RESTART_COMMAND_EXECUTE
+					} else {
+						state = RESTART_REQUESTED
+					}
+					time.Sleep(500 * time.Millisecond)	// cheap way of forcing the user to wait for another button press.
 					processing = false
 				case gpiocontrol.InterruptPOWEROFF:
-					oscontrol.PoweroffOS()
+					if state == POWEROFF_WAITING_CONFIMRATION {
+						// give our state handler the indicatino to actually poweroff
+						state = POWEROFF_COMMAND_EXECUTE
+					} else {
+						state = POWEROFF_REQUESTED
+					}
+					time.Sleep(500 * time.Millisecond)	// cheap way of forcing the user to wait for another button press.
 					processing = false
 				default:
 					logger.Warn("Unknown interrupt")
 				}
 			}
+		case <-resetChannel:
+			{
+				logger.Debug("Resetting State.")
+				state = IDLE_RUNNING
+			}
+		}
+	}
+}
+
+type State uint8
+
+const (
+	IDLE_RUNNING 					= State(iota)
+
+	RESTART_REQUESTED 				= State(iota)
+	RESTART_WAITING_CONFIMRATION 	= State(iota)
+	RESTART_COMMAND_EXECUTE			= State(iota)
+
+	POWEROFF_REQUESTED 				= State(iota)
+	POWEROFF_WAITING_CONFIMRATION 	= State(iota)
+	POWEROFF_COMMAND_EXECUTE		= State(iota)
+
+)
+
+var state = IDLE_RUNNING
+var resetChannel = make(chan bool)
+func handleState() {
+	switch state {
+			case IDLE_RUNNING:
+			gpiocontrol.LEDpwm(20, 1)
+	case RESTART_REQUESTED:
+		{
+			logger.Debug("RESTART requested, waiting for confirmation")
+			state = RESTART_WAITING_CONFIMRATION
+			gpiocontrol.LEDpwm(50, 8)
+			// start timeout
+			go func() {
+				time.Sleep(3 * time.Second)
+				resetChannel <- true
+			}()
+		}
+	case POWEROFF_REQUESTED:
+		{
+			logger.Debug("POWEROFF requested, waiting for confirmation")
+			state = POWEROFF_WAITING_CONFIMRATION
+			gpiocontrol.LEDpwm(50, 8)
+			// start timeout
+			go func() {
+				time.Sleep(3 * time.Second)
+				resetChannel <- true
+			}()
+		}
+	case RESTART_COMMAND_EXECUTE:
+		{
+			state = IDLE_RUNNING
+			oscontrol.RestartOS()
+		}
+	case POWEROFF_COMMAND_EXECUTE:
+		{
+			state = IDLE_RUNNING
+			oscontrol.PoweroffOS()
 		}
 	}
 }
