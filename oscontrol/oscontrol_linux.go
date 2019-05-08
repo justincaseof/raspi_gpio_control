@@ -7,12 +7,12 @@ import (
 	"time"
 )
 
-func RestartOSnative() error {
+func restartOSnative() error {
 	runCommand("/usr/bin/systemctl", "reboot")
 	return nil
 }
 
-func PoweroffOSnative() error {
+func poweroffOSnative() error {
 	runCommand("/usr/bin/systemctl", "poweroff")
 	return nil
 }

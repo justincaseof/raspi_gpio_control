@@ -7,12 +7,12 @@ import (
 	"time"
 )
 
-func RestartOSnative() error {
+func restartOSnative() error {
 	runCommand("shutdown", "/r", "/t 0")
 	return nil
 }
 
-func PoweroffOSnative() error {
+func poweroffOSnative() error {
 	runCommand("shutdown", "/s", "/t 0")
 	return nil
 }
