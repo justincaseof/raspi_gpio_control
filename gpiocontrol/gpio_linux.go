@@ -6,10 +6,8 @@ import (
         iohost "periph.io/x/periph/host"
 	gpioperiph "periph.io/x/periph/conn/gpio"
 	"periph.io/x/periph/conn/gpio/gpioreg"
-        "raspi_gpio_control/logging"
 )
 
-var logger = logging.New("raspi_gpio_control_linux", false)
 var restartPin gpioperiph.PinIn
 var poweroffPin gpioperiph.PinIn
 

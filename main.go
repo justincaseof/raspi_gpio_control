@@ -17,6 +17,7 @@ var logger = logging.New("raspi_gpio_control_main", false)
 const GPIO_CONFIG_FILENAME = "gpioconfig.yml"
 
 var interruptChannel = make(chan gpiocontrol.Interrupt)
+var processing bool
 
 func main() {
 	logger.Info("### STARTUP")
@@ -29,11 +30,12 @@ func main() {
 		logger.Error("Cannot set up GPIO", zap.Error(err))
 		panic("Cannot set up GPIO")
 	}
+	processing = false
 
 	// GO
 	go mainLoop()
-	go gpiocontrol.CheckInterruptRESTART(interruptChannel)
-	go gpiocontrol.CheckInterruptPOWEROFF(interruptChannel)
+	go gpiocontrol.CheckInterruptRESTART(interruptChannel, &processing)
+	go gpiocontrol.CheckInterruptPOWEROFF(interruptChannel, &processing)
 
 	// wait indefinitely until external abortion
 	sigs := make(chan os.Signal, 1)
@@ -66,10 +68,12 @@ func mainLoop() {
 			logger.Debug("* Tick *")
 		case interrupt := <-interruptChannel:
 			{
+				processing = true
 				logger.Debug("INTERRUPT!", zap.Uint8("interrupt", uint8(interrupt)))
 				logger.Debug("   --> sleeping...")
-				time.Sleep(250)
+				time.Sleep(1000 * time.Millisecond)
 				logger.Debug("   ...done")
+				processing = false
 			}
 		}
 	}
