@@ -6,7 +6,7 @@ import (
         iohost "periph.io/x/periph/host"
 	gpioperiph "periph.io/x/periph/conn/gpio"
 	"periph.io/x/periph/conn/gpio/gpioreg"
-	//"periph.io/x/periph/conn/physic"
+	"periph.io/x/periph/conn/physic"
 )
 
 var restartPin gpioperiph.PinIn
@@ -50,7 +50,9 @@ func InitGPIONative(gpioConfig *GPIOConfig) error {
 		return errors.New("unable to set up ledPin")
 	}
 	// we're using 'RisingEdge' to trigger interrupt upon release of pushed button
-	//ledPin.PWM(DutyMax, physic.Frequency(2))
+	//ledPin.PWM(gpioperiph.DutyHalf, 10 * physic.Hertz)
+	//ledPin.Out(gpioperiph.High)
+	//ledPin.Out(gpioperiph.Low)
 	logger.Info("\t--> done.")
 
 
@@ -78,4 +80,8 @@ func ToggleLEDnative() {
 		logger.Info("  LED: ON")
 		ledPin.Out(gpioperiph.High)
 	}
+}
+
+func LEDpwm() {
+	ledPin.PWM(gpioperiph.DutyHalf, 10 * physic.Hertz)
 }

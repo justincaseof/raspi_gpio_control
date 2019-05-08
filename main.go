@@ -67,7 +67,9 @@ func mainLoop() {
 		select {
 		case <-time.After(1 * time.Second):
 			{
-				gpiocontrol.ToggleLED()
+				//gpiocontrol.ToggleLED()
+				gpiocontrol.LEDpwm()
+				
 				logger.Debug("* Tick *")
 			}
 		case interrupt := <-interruptChannel:
