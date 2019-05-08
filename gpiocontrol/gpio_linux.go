@@ -1,12 +1,14 @@
 package gpiocontrol
 
 import (
-	"periph.io/x/periph/conn/gpio"
-	"time"
+  gpioperiph "periph.io/x/periph/conn/gpio"
+  gpioreg "periph.io/x/periph/conn/gpio/gpioreg"
+  "time"
+  "github.com/pkg/errors"
 )
 
-var restartPin PinIn
-var poweroffPin PinIn
+var restartPin gpioperiph.PinIn
+var poweroffPin gpioperiph.PinIn
 
 func InitGPIONative(gpioConfig *GPIOConfig) error {
 	restartPin := gpioreg.ByName(gpioConfig.RestartPin)
@@ -14,14 +16,14 @@ func InitGPIONative(gpioConfig *GPIOConfig) error {
 		return errors.New("unable to set up restartPin")
 	}
 	// we're using 'RisingEdge' to trigger interrupt upon release of pushed button
-	restartPin.In(gpio.PullUp, gpio.RisingEdge)
+	restartPin.In(gpioperiph.PullUp, gpioperiph.RisingEdge)
 
 	poweroffPin := gpioreg.ByName(gpioConfig.PoweroffPin)
 	if poweroffPin == nil {
 		return errors.New("unable to set up poweroffPin")
 	}
 	// we're using 'RisingEdge' to trigger interrupt upon release of pushed button
-	poweroffPin.In(gpio.PullUp, gpio.RisingEdge)
+	poweroffPin.In(gpioperiph.PullUp, gpioperiph.RisingEdge)
 
 	return nil
 }
