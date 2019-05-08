@@ -2,6 +2,7 @@ package gpio
 
 import (
 	"periph.io/x/periph/conn/gpio"
+	"time"
 )
 
 var restartPin PinIn
@@ -23,4 +24,14 @@ func InitGPIONative(gpioConfig *GPIOConfig) error {
 	poweroffPin.In(gpio.PullUp, gpio.RisingEdge)
 
 	return nil
+}
+
+func HasInterruptRESTART() bool {
+	// WaitForEdge is blocking
+	return restartPin.WaitForEdge(time.Duration(-1))
+}
+
+func HasInterruptPOWEROFF() bool {
+	// WaitForEdge is blocking
+	return poweroffPin.WaitForEdge(time.Duration(-1))
 }

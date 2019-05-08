@@ -16,6 +16,8 @@ import (
 var logger = logging.New("raspi_gpio_control", false)
 const GPIO_CONFIG_FILENAME = "gpioconfig.yml"
 
+var interruptChannel = make(chan gpiocontrol.Interrupt)
+
 func main() {
 	logger.Info("### STARTUP")
 
@@ -28,6 +30,8 @@ func main() {
 
 	// GO
 	go mainLoop()
+	go gpiocontrol.CheckInterruptRESTART(interruptChannel)
+	go gpiocontrol.CheckInterruptPOWEROFF(interruptChannel)
 
 	// wait indefinitely until external abortion
 	sigs := make(chan os.Signal, 1)
@@ -57,8 +61,9 @@ func mainLoop() {
 	for {
 		select {
 		case <-time.After(5 * time.Second):
-			//temperatureRead()
-
+			logger.Debug("* Tick *")
+		case interrupt := <-interruptChannel:
+			logger.Debug("INTERRUPT!", zap.Uint8("interrupt", uint8(interrupt)))
 		}
 	}
 }
