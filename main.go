@@ -65,7 +65,12 @@ func mainLoop() {
 		case <-time.After(5 * time.Second):
 			logger.Debug("* Tick *")
 		case interrupt := <-interruptChannel:
-			logger.Debug("INTERRUPT!", zap.Uint8("interrupt", uint8(interrupt)))
+			{
+				logger.Debug("INTERRUPT!", zap.Uint8("interrupt", uint8(interrupt)))
+				logger.Debug("   --> sleeping...")
+				time.Sleep(250)
+				logger.Debug("   ...done")
+			}
 		}
 	}
 }
