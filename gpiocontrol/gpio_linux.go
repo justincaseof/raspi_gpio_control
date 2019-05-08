@@ -6,6 +6,7 @@ import (
 	gpioperiph "periph.io/x/periph/conn/gpio"
 	"periph.io/x/periph/conn/gpio/gpioreg"
 	"time"
+        "raspi_gpio_control/logging"
 )
 var logger = logging.New("raspi_gpio_control_linux", false)
 var restartPin gpioperiph.PinIn
@@ -14,7 +15,7 @@ var poweroffPin gpioperiph.PinIn
 func InitGPIONative(gpioConfig *GPIOConfig) error {
 	logger.Info("* setting up GPIO *")
 
-	logger.Info("\tinitializing pin:", zap.String("restartPin", gpioConfig.RestartPin))
+	logger.Info("\t--> initializing pin:", zap.String("restartPin", gpioConfig.RestartPin))
 	restartPin := gpioreg.ByName(gpioConfig.RestartPin)
 	if restartPin == nil {
 		return errors.New("unable to set up restartPin")
@@ -23,7 +24,7 @@ func InitGPIONative(gpioConfig *GPIOConfig) error {
 	restartPin.In(gpioperiph.PullUp, gpioperiph.RisingEdge)
 	logger.Info("\t--> done.")
 
-	logger.Info("\tinitializing pin:", zap.String("poweroffPin", gpioConfig.PoweroffPin))
+	logger.Info("\t--> initializing pin:", zap.String("poweroffPin", gpioConfig.PoweroffPin))
 	poweroffPin := gpioreg.ByName(gpioConfig.PoweroffPin)
 	if poweroffPin == nil {
 		return errors.New("unable to set up poweroffPin")
