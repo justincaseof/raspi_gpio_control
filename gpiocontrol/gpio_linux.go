@@ -3,6 +3,7 @@ package gpiocontrol
 import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
+        iohost "periph.io/x/periph/host"
 	gpioperiph "periph.io/x/periph/conn/gpio"
 	"periph.io/x/periph/conn/gpio/gpioreg"
 	"time"
@@ -13,7 +14,14 @@ var restartPin gpioperiph.PinIn
 var poweroffPin gpioperiph.PinIn
 
 func InitGPIONative(gpioConfig *GPIOConfig) error {
-	logger.Info("* setting up GPIO *")
+    logger.Info("* initializing gpio lib *")
+    if _, err := iohost.Init(); err != nil {
+        logger.Error("error initializing gpio lib", zap.Error(err))
+        return errors.New("error initializing gpio lib")
+    }
+    logger.Info("done.")
+
+	logger.Info("* setting up GPIO pins *")
 
 	logger.Info("\t--> initializing pin:", zap.String("restartPin", gpioConfig.RestartPin))
 	restartPin := gpioreg.ByName(gpioConfig.RestartPin)
