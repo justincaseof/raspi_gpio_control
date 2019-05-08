@@ -72,6 +72,9 @@ func readConfig(appConfig *AppConfig) {
 
 func mainLoop() {
 	processing = false
+	state = IDLE_RUNNING
+	handleState()
+
 	for {
 		select {
 		case <-time.After(1 * time.Second):
@@ -129,7 +132,7 @@ const (
 	POWEROFF_COMMAND_EXECUTE      = State(iota)
 )
 
-var state = IDLE_RUNNING
+var state State
 var resetChannel = make(chan bool)
 
 func handleState() {
