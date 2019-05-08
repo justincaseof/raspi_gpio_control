@@ -3,10 +3,10 @@ package gpiocontrol
 import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-        iohost "periph.io/x/periph/host"
 	gpioperiph "periph.io/x/periph/conn/gpio"
 	"periph.io/x/periph/conn/gpio/gpioreg"
 	"periph.io/x/periph/conn/physic"
+	iohost "periph.io/x/periph/host"
 )
 
 var restartPin gpioperiph.PinIn
@@ -14,16 +14,16 @@ var poweroffPin gpioperiph.PinIn
 var ledPin gpioperiph.PinOut
 
 func initGPIONative(gpioConfig *GPIOConfig) error {
-    logger.Info("* initializing gpio lib *")
-    if _, err := iohost.Init(); err != nil {
-        logger.Error("error initializing gpio lib", zap.Error(err))
-        return errors.New("error initializing gpio lib")
-    }
-    logger.Info("done.")
+	logger.Info("* initializing gpio lib *")
+	if _, err := iohost.Init(); err != nil {
+		logger.Error("error initializing gpio lib", zap.Error(err))
+		return errors.New("error initializing gpio lib")
+	}
+	logger.Info("done.")
 
 	logger.Info("* setting up GPIO pins *")
 
-    // ### RESTART PIN ###
+	// ### RESTART PIN ###
 	logger.Info("\t--> initializing pin:", zap.String("restartPin", gpioConfig.RestartPin))
 	restartPin = gpioreg.ByName(gpioConfig.RestartPin)
 	if restartPin == nil {
@@ -55,7 +55,6 @@ func initGPIONative(gpioConfig *GPIOConfig) error {
 	//ledPin.Out(gpioperiph.Low)
 	logger.Info("\t--> done.")
 
-
 	return nil
 }
 
@@ -70,6 +69,7 @@ func hasInterruptPOWEROFF() bool {
 }
 
 var isOn bool = true
+
 func toggleLEDnative() {
 	if isOn {
 		isOn = false
@@ -83,11 +83,11 @@ func toggleLEDnative() {
 }
 
 func pinPWMnative(dutyPercentage uint, hertz uint) {
-	ledPin.PWM(uint32((gpioperiph.DutyHalf * 100) / dutyPercentage), hertz * physic.Hertz)
+	ledPin.PWM(uint32((gpioperiph.DutyHalf*100)/dutyPercentage), hertz*physic.Hertz)
 }
-func pinHighNative() {
+func pinHIGHnative() {
 	ledPin.Out(gpioperiph.High)
 }
-func pinLowNative() {
-ledPin.Out(gpioperiph.Low)
+func pinLOWnative() {
+	ledPin.Out(gpioperiph.Low)
 }

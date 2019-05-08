@@ -19,11 +19,11 @@ func pinPWMnative(dutyPercentage uint, hertz uint) {
 	// will not be implemented
 	panic("WINDOWS IS NOT SUPPORTED.")
 }
-func pinHighNative() {
+func pinHIGHnative() {
 	// will not be implemented
 	panic("WINDOWS IS NOT SUPPORTED.")
 }
-func pinLowNative() {
+func pinLOWnative() {
 	// will not be implemented
 	panic("WINDOWS IS NOT SUPPORTED.")
 }

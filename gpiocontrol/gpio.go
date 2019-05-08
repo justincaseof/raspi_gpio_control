@@ -6,16 +6,17 @@ import (
 
 // GPIOConfig cfg
 type GPIOConfig struct {
-	RestartPin 	string `yaml:"restart-pin"`
+	RestartPin  string `yaml:"restart-pin"`
 	PoweroffPin string `yaml:"poweroff-pin"`
 	LEDPin      string `yaml:"LED-pin"`
 }
 
 type Interrupt uint8
+
 const (
-	InterruptNONE 		Interrupt = 0
-	InterruptRESTART 	Interrupt = 1
-	InterruptPOWEROFF 	Interrupt = 2
+	InterruptNONE     Interrupt = 0
+	InterruptRESTART  Interrupt = 1
+	InterruptPOWEROFF Interrupt = 2
 )
 
 var logger = logging.New("raspi_gpio_control_base", false)
@@ -53,7 +54,7 @@ func LEDpwm(dutyPercentage uint, hertz uint) {
 }
 
 func LEDon() {
-	pinHighNative()
+	pinHIGHnative()
 }
 
 func LEDoff() {
