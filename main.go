@@ -74,8 +74,10 @@ func mainLoop() {
 				switch interrupt {
 				case gpiocontrol.InterruptRESTART:
 					oscontrol.RestartOS()
+					processing = false
 				case gpiocontrol.InterruptPOWEROFF:
 					oscontrol.PoweroffOS()
+					processing = false
 				default:
 					logger.Warn("Unknown interrupt")
 				}

@@ -8,7 +8,7 @@ import (
 )
 
 func RestartOSnative() error {
-	runCommand("/usr/bin/systemctl", "restart")
+	runCommand("/usr/bin/systemctl", "reboot")
 	return nil
 }
 
