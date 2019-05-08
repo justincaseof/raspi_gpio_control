@@ -16,24 +16,30 @@ import (
 
 var logger = logging.New("raspi_gpio_control_main", false)
 
-const GPIO_CONFIG_FILENAME = "gpioconfig.yml"
+const CONFIG_FILENAME = "config.yml"
 
 var interruptChannel = make(chan gpiocontrol.Interrupt)
 var processing bool
 
+type AppConfig struct {
+	IsSimulation bool                   `yaml:"is-simulation"`
+	GPIOconfig   gpiocontrol.GPIOConfig `yaml:"gpio-config"`
+}
+
+var appConfig AppConfig
+
 func main() {
 	logger.Info("### STARTUP")
 
+	// READ CONFIG
+	readConfig(&appConfig)
 	// INIT
-	oscontrol.Init(true)
-	var cfg gpiocontrol.GPIOConfig
-	readGPIOConfig(&cfg)
-	err := gpiocontrol.InitGPIO(&cfg)
+	oscontrol.Init(appConfig.IsSimulation)
+	err := gpiocontrol.InitGPIO(&appConfig.GPIOconfig)
 	if err != nil {
 		logger.Error("Cannot set up GPIO", zap.Error(err))
 		panic("Cannot set up GPIO")
 	}
-	processing = false
 
 	// GO
 	go mainLoop()
@@ -49,15 +55,15 @@ func main() {
 
 // ==== I/O and properties ====
 
-func readGPIOConfig(gpioconfig *gpiocontrol.GPIOConfig) {
+func readConfig(appConfig *AppConfig) {
 	var err error
 	var bytes []byte
-	bytes, err = ioutil.ReadFile(GPIO_CONFIG_FILENAME)
+	bytes, err = ioutil.ReadFile(CONFIG_FILENAME)
 	if err != nil {
-		logger.Error("Cannot open config file", zap.String("filename", GPIO_CONFIG_FILENAME))
+		logger.Error("Cannot open config file", zap.String("filename", CONFIG_FILENAME))
 		panic(err)
 	}
-	err = yaml.Unmarshal(bytes, gpioconfig)
+	err = yaml.Unmarshal(bytes, appConfig)
 	if err != nil {
 		panic(err)
 	}
@@ -65,6 +71,7 @@ func readGPIOConfig(gpioconfig *gpiocontrol.GPIOConfig) {
 }
 
 func mainLoop() {
+	processing = false
 	for {
 		select {
 		case <-time.After(1 * time.Second):
@@ -154,11 +161,13 @@ func handleState() {
 	case RESTART_COMMAND_EXECUTE:
 		{
 			state = IDLE_RUNNING
+			gpiocontrol.LEDoff()
 			oscontrol.RestartOS()
 		}
 	case POWEROFF_COMMAND_EXECUTE:
 		{
 			state = IDLE_RUNNING
+			gpiocontrol.LEDoff()
 			oscontrol.PoweroffOS()
 		}
 	}

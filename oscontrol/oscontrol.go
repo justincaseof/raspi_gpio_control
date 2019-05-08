@@ -11,6 +11,9 @@ var isSimulation bool = false
 
 func Init(simulateOScontrol bool) {
 	isSimulation = simulateOScontrol
+	if isSimulation {
+		logger.Warn("RUNNING IN SIMULATION MODE (--> RESTART and POWEROFF are not actually executed)")
+	}
 }
 
 func RestartOS() error {

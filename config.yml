@@ -1,0 +1,5 @@
+is-simulation: true
+gpio-config:
+  restart-pin: GPIO26
+  poweroff-pin: GPIO19
+  LED-pin: GPIO13
