@@ -1,0 +1,30 @@
+name: Build for Raspberry Pi
+
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Build
+        env:
+          GOOS: linux
+          GOARCH: arm
+        run: go build -o raspi_gpio_control main.go
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: raspi_gpio_control-arm
+          path: raspi_gpio_control
