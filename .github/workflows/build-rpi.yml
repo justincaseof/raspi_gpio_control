@@ -24,7 +24,7 @@ jobs:
         run: go build -o raspi_gpio_control main.go
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: raspi_gpio_control-arm
           path: raspi_gpio_control
