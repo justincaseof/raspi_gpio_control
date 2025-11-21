@@ -3,10 +3,10 @@ package gpiocontrol
 import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	gpioperiph "periph.io/x/periph/conn/gpio"
-	"periph.io/x/periph/conn/gpio/gpioreg"
-	"periph.io/x/periph/conn/physic"
-	iohost "periph.io/x/periph/host"
+	gpioperiph "periph.io/x/conn/v3/gpio"
+	"periph.io/x/conn/v3/gpio/gpioreg"
+	"periph.io/x/conn/v3/physic"
+	iohost "periph.io/x/host/v3"
 )
 
 var restartPin gpioperiph.PinIn
