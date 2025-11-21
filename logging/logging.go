@@ -36,7 +36,7 @@ func New(prefix string, isProduction bool) *zap.Logger {
 	}
 
 	if err != nil {
-		fmt.Println("can't initialize zap logger: %v", err)
+		fmt.Printf("can't initialize zap logger: %v\n", err)
 		os.Exit(1)
 	}
 	defer logger.Sync()
